@@ -20,9 +20,8 @@ require_once 'includes/header.php';
                 <div class="w-full px-8">
                     <h1 class="text-4xl md:text-5xl font-bold text-[#0B2447] leading-tight text-center">
                         Your Partner for<br>
-                        Quality Plumbing<br>
-                        and Electrical<br>
-                        Work.
+                        Quality Plumbing and<br>
+                        Electrical Work.
                     </h1>
                 </div>
             </div>
