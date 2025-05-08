@@ -1,0 +1,371 @@
+/* Custom styles for Springfield Panel and Paint */
+
+/* Global styles */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Hero section */
+.hero-section {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Make hero headings and text stand out more */
+.hero-section h1 {
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 900;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+}
+
+.hero-section p {
+    font-weight: 600;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Service Cards */
+.service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-card img {
+    transition: transform 0.5s ease;
+}
+
+.service-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Testimonials */
+.testimonial-card {
+    position: relative;
+}
+
+.testimonial-card::before {
+    content: "\201C";
+    font-size: 120px;
+    position: absolute;
+    top: -40px;
+    left: -15px;
+    opacity: 0.1;
+    font-family: Georgia, serif;
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2563EB;
+}
+
+/* Section headers */
+.section-header {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.section-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: #e11d24;
+}
+
+/* Team member cards */
+.team-member-card {
+    overflow: hidden;
+}
+
+.team-member-card img {
+    transition: filter 0.3s ease;
+}
+
+.team-member-card:hover img {
+    filter: brightness(90%);
+}
+
+/* Counter section */
+.counter-item {
+    text-align: center;
+}
+
+.counter-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #e11d24;
+}
+
+/* Blog cards */
+.blog-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Contact form */
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quote button pulse effect */
+.pulse-button {
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 0 0 rgba(225, 29, 36, 0.7);
+    transform: scale(1);
+    border: 2px solid #fff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(225, 29, 36, 0.7);
+    }
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 12px rgba(225, 29, 36, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(225, 29, 36, 0);
+    }
+}
+
+/* Form elements and interactive components */
+input, textarea, select {
+    background-color: #ffffff;
+    color: #333333;
+    border-color: #e5e7eb;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #6b7280;
+}
+
+.hover\:bg-gray-100:hover {
+    background-color: #f3f4f6;
+}
+
+.hover\:bg-gray-200:hover {
+    background-color: #e5e7eb;
+}
+
+/* Section backgrounds */
+.bg-gray-100, .bg-gray-50 {
+    background-color: #f3f4f6;
+}
+
+/* Preserve primary red color */
+.text-primary {
+    color: #e11d24;
+}
+
+.bg-primary {
+    background-color: #e11d24;
+}
+
+/* Custom Styles */
+
+/* Header Styles */
+.header-shadow {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Hover Effects */
+.hover-grow {
+    transition: transform 0.3s ease;
+}
+
+.hover-grow:hover {
+    transform: scale(1.05);
+}
+
+/* Custom Colors */
+.text-dark {
+    color: #1a202c;
+}
+
+.bg-dark {
+    background-color: #1a202c;
+}
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    .mobile-menu {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .mobile-menu.active {
+        transform: translateX(0);
+    }
+}
+
+/* Custom Animations */
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Footer Styles */
+.footer-link {
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #3B82F6;
+}
+
+/* Custom Utility Classes */
+.text-gradient {
+    background: linear-gradient(45deg, #3B82F6, #2563EB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.shadow-hover {
+    transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Container Padding */
+.section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+    .section-padding {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+}
+
+/* Custom Border Radius */
+.rounded-xl {
+    border-radius: 1rem;
+}
+
+/* Custom Grid Gap */
+.gap-custom {
+    gap: 2rem;
+}
+
+/* Custom Transitions */
+.transition-custom {
+    transition: all 0.3s ease;
+}
+
+/* Custom Box Shadow */
+.shadow-custom {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Background Overlay */
+.bg-overlay {
+    position: relative;
+}
+
+.bg-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.bg-overlay > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Custom List Styles */
+.custom-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.custom-list li {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.custom-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #3B82F6;
+}
+
+/* Custom Image Styles */
+.img-hover {
+    transition: transform 0.3s ease;
+}
+
+.img-hover:hover {
+    transform: scale(1.05);
+}
+
+/* Custom Card Styles */
+.card-custom {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-custom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+} 
