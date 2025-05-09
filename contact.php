@@ -58,7 +58,7 @@ if (isset($_GET['error'])) {
                             </svg>
                         </div>
                         <h3 class="text-xl font-bold mb-2">Service Areas</h3>
-                        <p>Durban and surrounding areas</p>
+                        <p>Midrand, Sandton, Fourways, Randburg, Roodepoort, Krugersdorp, Soweto, Johannesburg South</p>
                     </div>
                 </div>
 
