@@ -53,17 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Send email
         try {
-            // Simulate successful email sending for local development
-            $success = true;
-            // Log email content to a file instead of sending
-            $log_message = "---- New Contact Form Submission ----\n";
-            $log_message .= "To: $to\n";
-            $log_message .= "Subject: $subject\n";
-            $log_message .= "Headers: $headers\n";
-            $log_message .= "Content:\n$email_content\n";
-            $log_message .= "------------------------------------\n\n";
-            file_put_contents('contact_form_log.txt', $log_message, FILE_APPEND);
-
+            if (mail($to, $subject, $email_content, $headers)) {
+                $success = true;
+            } else {
+                throw new Exception('Failed to send email');
+            }
         } catch (Exception $e) {
             error_log('Contact form error: ' . $e->getMessage());
             $error_message = 'Sorry, there was an error sending your message. Please try again later.';
