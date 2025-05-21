@@ -163,18 +163,6 @@ require_once 'includes/header.php';
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-12 text-center">Gallery:</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <img src="images/General-Plumbing-Repairs.jpg" alt="Plumbing Repairs" class="w-full h-auto rounded-lg shadow-lg">
-                <img src="images/Expert-Drain-Cleaning-Services.jpg" alt="Drain Cleaning" class="w-full h-auto rounded-lg shadow-lg">
-                <img src="images/Bathroom-Renovations.jpg" alt="Bathroom Renovations" class="w-full h-auto rounded-lg shadow-lg">
-        </div>
-    </div>
-</section>
-
     <!-- Call to Action -->
     <section class="py-16 bg-yellow-500">
         <div class="container mx-auto px-4 text-center">

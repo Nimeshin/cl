@@ -1,0 +1,43 @@
+# PHP specific
+vendor/
+composer.lock
+.env
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Cache and session files
+/cache/
+/sessions/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Configuration files that may contain sensitive information
+config.php
+database.php
+*config*.php
+
+# Composer
+composer.phar
+
+# Node modules if using any JavaScript tools
+node_modules/
+package-lock.json 

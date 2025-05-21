@@ -90,25 +90,12 @@ require_once 'includes/header.php';
                         </div>
                     </div>
                 </div>
-
-                <!-- Gallery Section -->
-                <div class="mt-16">
-                    <h2 class="text-3xl font-bold mb-8 text-center">Our Work</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="aspect-w-4 aspect-h-3">
-                            <img src="images/gallery/work-1.jpg" alt="Plumbing Work" class="w-full h-full object-cover rounded-lg">
-                        </div>
-                        <div class="aspect-w-4 aspect-h-3">
-                            <img src="images/gallery/work-2.jpg" alt="Electrical Work" class="w-full h-full object-cover rounded-lg">
-                        </div>
-                        <div class="aspect-w-4 aspect-h-3">
-                            <img src="images/gallery/work-3.jpg" alt="Installation Work" class="w-full h-full object-cover rounded-lg">
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 </main>
 
-<?php require_once 'includes/footer.php'; ?> 
+<?php
+// Include footer
+require_once 'includes/footer.php';
+?> 
