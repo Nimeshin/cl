@@ -4,8 +4,15 @@ declare(strict_types=1);
 /**
  * Contact Form Processing Script
  * 
- * Handles the submission of the contact form and sends notification emails.
+ * Handles the submission of the contact form and sends notification emails using PHPMailer.
  */
+
+// Include Composer's autoloader
+require 'vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 // Configuration
 $admin_email = 'info@clhomeassist.co.za';
@@ -34,36 +41,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error_message = 'Please enter a valid email address.';
     } else {
-        // Prepare email content
-        $to = $admin_email;
-        $subject = "New Contact Form Submission - $site_name";
-        $email_content = "New contact form submission from $site_name:\n\n";
-        $email_content .= "Name: $first_name $last_name\n";
-        $email_content .= "Email: $email\n";
-        if ($phone) {
-            $email_content .= "Phone: $phone\n";
-        }
-        $email_content .= "\nMessage:\n$message\n";
-
-        // Email headers - Modified for cPanel compatibility
-        $domain = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ?: $_SERVER['HTTP_HOST'];
-        $from_email = "noreply@" . $domain;
-        
-        $headers = array();
-        $headers[] = "MIME-Version: 1.0";
-        $headers[] = "Content-Type: text/plain; charset=UTF-8";
-        $headers[] = "From: $site_name <$from_email>";
-        $headers[] = "Reply-To: $first_name $last_name <$email>";
-        $headers[] = "X-Mailer: PHP/" . phpversion();
-        $headers[] = "X-Priority: 1";
-        
-        // Convert headers array to string
-        $headers_string = implode("\r\n", $headers);
-
-        // Send email with additional parameters for cPanel
         try {
-            $additional_params = "-f " . $from_email;
-            if (mail($to, $subject, $email_content, $headers_string, $additional_params)) {
+            // Create a new PHPMailer instance
+            $mail = new PHPMailer(true);
+
+            // Server settings for cPanel
+            $mail->isSMTP();
+            $mail->Host = 'localhost'; // cPanel mail server
+            $mail->Port = 25; // Local SMTP port
+            $mail->SMTPAuth = false; // No authentication needed for local mail server
+
+            // Recipients
+            $mail->setFrom('noreply@' . $_SERVER['HTTP_HOST'], $site_name);
+            $mail->addAddress($admin_email);
+            $mail->addReplyTo($email, "$first_name $last_name");
+
+            // Content
+            $mail->isHTML(false);
+            $mail->Subject = "New Contact Form Submission - $site_name";
+            
+            // Prepare email content
+            $email_content = "New contact form submission from $site_name:\n\n";
+            $email_content .= "Name: $first_name $last_name\n";
+            $email_content .= "Email: $email\n";
+            if ($phone) {
+                $email_content .= "Phone: $phone\n";
+            }
+            $email_content .= "\nMessage:\n$message\n";
+
+            $mail->Body = $email_content;
+
+            // Send email
+            if ($mail->send()) {
                 $success = true;
             } else {
                 throw new Exception('Failed to send email');
@@ -71,11 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Exception $e) {
             error_log('Contact form error: ' . $e->getMessage());
             $error_message = 'Sorry, there was an error sending your message. Please try again later. Details: ' . $e->getMessage();
-            // Add more details if mail() returned false and set an error
-            $last_error = error_get_last();
-            if ($last_error && $last_error['type'] === E_WARNING) {
-                $error_message .= ' PHP Warning: ' . $last_error['message'];
-            }
         }
     }
 }
