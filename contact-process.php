@@ -60,7 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (Exception $e) {
             error_log('Contact form error: ' . $e->getMessage());
-            $error_message = 'Sorry, there was an error sending your message. Please try again later.';
+            $error_message = 'Sorry, there was an error sending your message. Please try again later. Details: ' . $e->getMessage();
+            // Add more details if mail() returned false and set an error
+            $last_error = error_get_last();
+            if ($last_error && $last_error['type'] === E_WARNING) {
+                $error_message .= ' PHP Warning: ' . $last_error['message'];
+            }
         }
     }
 }
