@@ -22,11 +22,11 @@ $error_message = '';
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate form data
-    $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
-    $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
+    $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
-    $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
+    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     // Validate required fields
     if (!$first_name || !$last_name || !$email || !$message) {
@@ -45,15 +45,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $email_content .= "\nMessage:\n$message\n";
 
-        // Email headers
-        $headers = "From: $email\r\n";
-        $headers .= "Reply-To: $email\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        // Email headers - Modified for cPanel compatibility
+        $domain = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ?: $_SERVER['HTTP_HOST'];
+        $from_email = "noreply@" . $domain;
+        
+        $headers = array();
+        $headers[] = "MIME-Version: 1.0";
+        $headers[] = "Content-Type: text/plain; charset=UTF-8";
+        $headers[] = "From: $site_name <$from_email>";
+        $headers[] = "Reply-To: $first_name $last_name <$email>";
+        $headers[] = "X-Mailer: PHP/" . phpversion();
+        $headers[] = "X-Priority: 1";
+        
+        // Convert headers array to string
+        $headers_string = implode("\r\n", $headers);
 
-        // Send email
+        // Send email with additional parameters for cPanel
         try {
-            if (mail($to, $subject, $email_content, $headers)) {
+            $additional_params = "-f " . $from_email;
+            if (mail($to, $subject, $email_content, $headers_string, $additional_params)) {
                 $success = true;
             } else {
                 throw new Exception('Failed to send email');
