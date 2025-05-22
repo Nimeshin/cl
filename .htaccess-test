@@ -1,0 +1,16 @@
+# Test .htaccess file
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Remove .php extension - main functionality
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
+    
+    # To check if .htaccess is working at all
+    RewriteRule ^test-rewrite$ check_mod_rewrite.php [L]
+</IfModule>
+
+# To check if .htaccess is being processed at all
+ErrorDocument 404 /check_mod_rewrite.php 
