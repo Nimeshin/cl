@@ -1,0 +1,25 @@
+# Minimal .htaccess for cPanel environments
+<IfModule mod_rewrite.c>
+    # Basic rewrite setup
+    RewriteEngine On
+    RewriteBase /
+    
+    # Special rule for cPanel - fixes some environments
+    Options +FollowSymLinks
+
+    # Handle the home page properly
+    RewriteRule ^index$ index.php [L]
+    
+    # Redirect from .php version to clean version 
+    RewriteCond %{THE_REQUEST} \s/+([^.]+)\.php\s [NC]
+    RewriteRule ^ /%1 [R=301,L]
+    
+    # Internally map clean URLs to .php files
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^/]+)/?$ $1.php [L]
+</IfModule>
+
+# Fallback error pages
+ErrorDocument 404 /404.php 
