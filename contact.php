@@ -1,6 +1,12 @@
 <?php
 declare(strict_types=1);
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log');
+
 // Start session
 session_start();
 
@@ -10,11 +16,15 @@ $page_title = 'Contact Us';
 // Include header
 require_once 'includes/header.php';
 
+// Debug: Log session data
+error_log("Session data in contact.php: " . print_r($_SESSION, true));
+
 // Get messages from session
 $form_message = null;
 if (isset($_SESSION['contact_form_message'])) {
     $form_message = $_SESSION['contact_form_message'];
     unset($_SESSION['contact_form_message']); // Clear the message after retrieving
+    error_log("Form message retrieved from session: " . print_r($form_message, true));
 }
 ?>
 
@@ -65,7 +75,7 @@ if (isset($_SESSION['contact_form_message'])) {
                     <h2 class="text-3xl font-bold text-center mb-8 text-white">Get in Touch</h2>
                     
                     <?php if ($form_message): ?>
-                        <div class="<?php echo $form_message['type'] === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700'; ?> px-4 py-3 rounded relative mb-6" role="alert">
+                        <div class="<?php echo $form_message['type'] === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700'; ?> border px-4 py-3 rounded relative mb-6" role="alert">
                             <span class="block sm:inline"><?php echo htmlspecialchars($form_message['text']); ?></span>
                         </div>
                     <?php endif; ?>
