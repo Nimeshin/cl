@@ -28,8 +28,7 @@ ini_set('error_log', __DIR__ . '/error.log');
 $page_title = 'Contact Us';
 
 // Include header
-// require_once 'includes/header.php'; // Temporarily commented out for debugging
-error_log("[contact.php] header.php include has been SKIPPED (after restore).");
+require_once 'includes/header.php';
 
 // Debug: Log session data
 error_log("Session data in contact.php: " . print_r($_SESSION, true));
