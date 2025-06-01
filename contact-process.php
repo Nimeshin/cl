@@ -49,6 +49,10 @@ $error_message = '';
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Set header to prevent caching
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Content-Type: application/json');
+    
     try {
         // Validate form data
         $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -224,32 +228,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Contact form error: " . $e->getMessage());
         $error_message = $e->getMessage();
     }
-} else {
-    error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
-    $error_message = "Invalid request method";
-}
 
-// Store messages in session
-if ($success) {
-    $_SESSION['contact_form_message'] = [
-        'type' => 'success',
-        'text' => 'Thank you for your message! We will get back to you soon.'
-    ];
-    error_log("Success message set in session");
-} elseif ($error_message) {
+    // Store messages in session and return JSON response
+    if ($success) {
+        $_SESSION['contact_form_message'] = [
+            'type' => 'success',
+            'text' => 'Thank you for your message! We will get back to you soon.'
+        ];
+        echo json_encode(['status' => 'success', 'message' => 'Message sent successfully']);
+    } elseif ($error_message) {
+        $_SESSION['contact_form_message'] = [
+            'type' => 'error',
+            'text' => $error_message
+        ];
+        echo json_encode(['status' => 'error', 'message' => $error_message]);
+    }
+
+    // Debug: Log session data
+    error_log("Session data before response: " . print_r($_SESSION, true));
+} else {
+    // Handle non-POST requests
     $_SESSION['contact_form_message'] = [
         'type' => 'error',
-        'text' => $error_message
+        'text' => 'Invalid request method. Please try again.'
     ];
-    error_log("Error message set in session: $error_message");
+    
+    // Return JSON error for API requests
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+        exit;
+    }
+    
+    // Redirect for direct browser requests
+    header('Location: contact.php');
+    exit;
 }
-
-// Debug: Log session data
-error_log("Session data before redirect: " . print_r($_SESSION, true));
-
-// Redirect back to contact page
-header('Location: contact.php');
-exit;
 
 // Function to save form submission to database (if needed)
 function saveToDatabase(array $data): void {

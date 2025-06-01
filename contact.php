@@ -223,11 +223,20 @@ document.addEventListener('DOMContentLoaded', function() {
             // Send form data using fetch
             fetch('contact-process.php', {
                 method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
                 body: formData
             })
             .then(response => {
-                // Always redirect to contact.php
-                window.location.href = 'contact.php';
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(() => {
+                // Reload the page to show the success message
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
