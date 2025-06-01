@@ -81,7 +81,7 @@ if (isset($_SESSION['contact_form_message'])) {
                         <?php unset($_SESSION['contact_form_message']); ?>
                     <?php endif; ?>
 
-                    <form method="POST" action="contact-process.php" id="contactForm" onsubmit="return validateForm(event)">
+                    <form method="POST" action="contact-process.php" id="contactForm">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <input type="text" name="first_name" placeholder="First Name*" required
@@ -126,19 +126,5 @@ if (isset($_SESSION['contact_form_message'])) {
         </div>
     </section>
 </main>
-
-<script>
-function validateForm(event) {
-    const form = event.target;
-    const submitButton = form.querySelector('button[type="submit"]');
-    
-    if (form.checkValidity()) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'Sending...';
-        return true;
-    }
-    return false;
-}
-</script>
 
 <?php require_once 'includes/footer.php'; ?> 
