@@ -58,74 +58,114 @@ $site_name = 'CL Home Assist';
 $success = false;
 $error_message = '';
 
-// Process form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate form data
-    $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-    // Validate required fields
-    if (!$first_name || !$last_name || !$email || !$message) {
-        $error_message = 'Please fill in all required fields.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error_message = 'Please enter a valid email address.';
-    } else {
-        try {
-            // Create a new PHPMailer instance
-            $mail = new PHPMailer(true);
-
-            // Server settings for cPanel
-            $mail->isSMTP();
-            $mail->Host = 'localhost'; // cPanel mail server
-            $mail->Port = 25; // Local SMTP port
-            $mail->SMTPAuth = false; // No authentication needed for local mail server
-
-            // Recipients
-            $mail->setFrom('noreply@' . $_SERVER['HTTP_HOST'], $site_name);
-            $mail->addAddress($admin_email);
-            $mail->addReplyTo($email, "$first_name $last_name");
-
-            // Content
-            $mail->isHTML(false);
-            $mail->Subject = "New Contact Form Submission - $site_name";
-            
-            // Prepare email content
-            $email_content = "New contact form submission from $site_name:\n\n";
-            $email_content .= "Name: $first_name $last_name\n";
-            $email_content .= "Email: $email\n";
-            if ($phone) {
-                $email_content .= "Phone: $phone\n";
-            }
-            $email_content .= "\nMessage:\n$message\n";
-
-            $mail->Body = $email_content;
-
-            // Send email
-            if ($mail->send()) {
-                $success = true;
-            } else {
-                throw new Exception('Failed to send email');
-            }
-        } catch (Exception $e) {
-            error_log('Contact form error: ' . $e->getMessage());
-            $error_message = 'Sorry, there was an error sending your message. Please try again later. Details: ' . $e->getMessage();
-        }
-    }
+// Check if form was submitted via POST and has the required token
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['form_submitted']) || $_POST['form_submitted'] !== '1') {
+    error_log("[contact-process.php] Invalid form submission (method/token). Redirecting.");
+    $_SESSION['contact_form_message'] = [
+        'type' => 'error',
+        'text' => 'Invalid form submission. Please try again.'
+    ];
+    session_write_close();
+    header('Location: contact.php');
+    exit;
 }
 
-// Debug logging
-error_log("Session data before redirect: " . print_r($_SESSION, true));
-session_write_close(); // Explicitly write and close session before redirect
+// Validate and sanitize input
+$first_name = trim(filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
+$last_name = trim(filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
+$email = trim(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL) ?? '');
+$phone = trim(filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
+$message_raw = trim(filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? ''); // Keep raw for nl2br
 
-// Redirect based on result
-if ($success) {
-    header('Location: contact.php?success=1');
+// Debug logging: Sanitized input
+error_log("[contact-process.php] Sanitized Input: First='$first_name', Last='$last_name', Email='$email', Phone='$phone', Msg='$message_raw'");
+
+// Validate required fields
+if (empty($first_name) || empty($last_name) || empty($email) || empty($message_raw)) {
+    error_log("[contact-process.php] Validation failed: Required fields missing.");
+    $_SESSION['contact_form_message'] = [
+        'type' => 'error',
+        'text' => 'Please fill in all required fields.'
+    ];
+    session_write_close();
+    header('Location: contact.php');
+    exit;
+}
+
+// Validate email format
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    error_log("[contact-process.php] Validation failed: Invalid email format for '$email'.");
+    $_SESSION['contact_form_message'] = [
+        'type' => 'error',
+        'text' => 'Please enter a valid email address.'
+    ];
+    session_write_close();
+    header('Location: contact.php');
+    exit;
+}
+
+// Prepare email to admin
+$to_admin = 'info@clhomeassist.co.za';
+$subject_admin = 'New Contact Form Submission - CL Home Assist';
+$headers_admin = [
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset=UTF-8',
+    'From: CL Home Assist <info@clhomeassist.co.za>', // Or a no-reply@yourdomain.com
+    'Reply-To: ' . htmlspecialchars($first_name . ' ' . $last_name) . ' <' . htmlspecialchars($email) . '>',
+    'X-Mailer: PHP/' . phpversion()
+];
+$message_admin_html = "
+<html><body>
+    <h2>New Contact Form Submission</h2>
+    <p><strong>Name:</strong> " . htmlspecialchars($first_name) . " " . htmlspecialchars($last_name) . "</p>
+    <p><strong>Email:</strong> " . htmlspecialchars($email) . "</p>
+    " . (!empty($phone) ? "<p><strong>Phone:</strong> " . htmlspecialchars($phone) . "</p>" : "") . "
+    <p><strong>Message:</strong><br>" . nl2br(htmlspecialchars($message_raw)) . "</p>
+</body></html>";
+
+error_log("[contact-process.php] Attempting to send email to admin: $to_admin");
+$success_admin = mail($to_admin, $subject_admin, $message_admin_html, implode("\r\n", $headers_admin));
+
+if ($success_admin) {
+    error_log("[contact-process.php] Email to admin sent successfully.");
+    $_SESSION['contact_form_message'] = [
+        'type' => 'success',
+        'text' => 'Thank you for your message! We will get back to you soon.'
+    ];
+    error_log("[contact-process.php] SUCCESS message SET. Session data: " . print_r($_SESSION, true));
+
+    // Prepare confirmation email to user
+    $subject_user = 'Thank you for contacting CL Home Assist';
+    $headers_user = [
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8',
+        'From: CL Home Assist <info@clhomeassist.co.za>',
+        'X-Mailer: PHP/' . phpversion()
+    ];
+    $message_user_html = "
+    <html><body>
+        <h2>Thank You for Contacting Us</h2>
+        <p>Dear " . htmlspecialchars($first_name) . ",</p>
+        <p>Thank you for contacting CL Home Assist. We have received your message and will get back to you as soon as possible.</p>
+        <p>For urgent matters, please call us at: 083 503 3081</p>
+        <p>Best regards,<br>The CL Home Assist Team</p>
+    </body></html>";
+    
+    error_log("[contact-process.php] Attempting to send confirmation email to user: $email");
+    mail($email, $subject_user, $message_user_html, implode("\r\n", $headers_user));
+
 } else {
-    header('Location: contact.php?error=' . urlencode($error_message));
+    error_log("[contact-process.php] FAILED to send email to admin.");
+    $_SESSION['contact_form_message'] = [
+        'type' => 'error',
+        'text' => 'Sorry, there was a problem sending your message. Please try again later.'
+    ];
+    error_log("[contact-process.php] ERROR message SET. Session data: " . print_r($_SESSION, true));
 }
+
+error_log("[contact-process.php] Session data IMMEDIATELY BEFORE final session_write_close() and redirect: " . print_r($_SESSION, true));
+session_write_close();
+header('Location: contact.php');
 exit;
 
 // Function to save form submission to database (if needed)
