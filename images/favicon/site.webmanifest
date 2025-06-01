@@ -1,21 +1,23 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "CL Home Assist - Plumbing & Electrical Services",
+  "short_name": "CL Home Assist",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "/images/favicon/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/images/favicon/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#0B2447",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "https://clhomeassist.co.za",
+  "description": "Professional plumbing and electrical services in Johannesburg. Available 24/7 for emergencies."
 }

@@ -1,7 +1,7 @@
-# Basic Apache Configuration - For Local Development
+# Basic Apache Configuration
 Options -Indexes
 RewriteEngine On
-RewriteBase /springfield/public_html/
+RewriteBase /
 
 # Handle PHP file extensions
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -9,5 +9,5 @@ RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [L]
 
 # Error Documents
-ErrorDocument 404 /springfield/public_html/404.php
-ErrorDocument 500 /springfield/public_html/500.php 
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php 

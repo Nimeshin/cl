@@ -94,5 +94,51 @@ $trading_hours = [
         });
     }
 </script>
+
+<!-- Schema Markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "CL Home Assist",
+  "image": "https://clhomeassist.co.za/images/home-banner.png",
+  "description": "Professional plumbing and electrical services in Johannesburg. Available 24/7 for emergencies.",
+  "@id": "https://clhomeassist.co.za",
+  "url": "https://clhomeassist.co.za",
+  "telephone": "083 503 3081",
+  "email": "info@clhomeassist.co.za",
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "Gauteng",
+    "addressCountry": "ZA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -26.2041,
+    "longitude": 28.0473
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "08:00",
+      "closes": "17:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "08:00",
+      "closes": "13:00"
+    }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/clhomeassist",
+    "https://www.instagram.com/clhomeassist"
+  ],
+  "priceRange": "$$",
+  "servesCuisine": "Plumbing and Electrical Services"
+}
+</script>
+
 </body>
 </html> 

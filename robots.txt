@@ -14,4 +14,4 @@ Disallow: /*.zip$
 Disallow: /*.gz$
 
 # Sitemap location
-Sitemap: https://springfieldpanelandpaint.co.za/sitemap.xml 
+Sitemap: https://clhomeassist.co.za/sitemap.xml 

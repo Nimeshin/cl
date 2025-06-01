@@ -9,6 +9,26 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="CL Home Assist - Your trusted plumbing and electrical experts in Johannesburg. 24/7 emergency services, professional installations, and repairs.">
+    <meta name="keywords" content="plumbing, electrical, Johannesburg, emergency plumber, electrical repairs, geyser installation, leak detection, blocked drains">
+    <meta name="author" content="CL Home Assist">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="<?php echo $page_title ?? 'CL Home Assist'; ?> - Your Trusted Plumbing and Electrical Experts">
+    <meta property="og:description" content="Professional plumbing and electrical services in Johannesburg. Available 24/7 for emergencies.">
+    <meta property="og:image" content="https://clhomeassist.co.za/images/home-banner.png">
+    <meta property="og:url" content="https://clhomeassist.co.za">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo $page_title ?? 'CL Home Assist'; ?> - Plumbing & Electrical Services">
+    <meta name="twitter:description" content="Professional plumbing and electrical services in Johannesburg. Available 24/7 for emergencies.">
+    <meta name="twitter:image" content="https://clhomeassist.co.za/images/home-banner.png">
+    
     <title><?php echo $page_title ?? 'CL Home Assist'; ?> - Your Trusted Plumbing and Electrical Experts</title>
     
     <!-- Favicons -->
