@@ -20,8 +20,8 @@ error_log("[contact.php] Session state on page load: " . print_r($_SESSION, true
 
 // Enable error reporting for debugging (after session_start)
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
+ini_set('display_errors', '1');
+ini_set('log_errors', '1');
 ini_set('error_log', __DIR__ . '/error.log');
 
 // Set page title
@@ -88,7 +88,9 @@ if (isset($_SESSION['contact_form_message'])) {
                 <div class="bg-[#0B2447] rounded-lg shadow-lg p-8 mb-12">
                     <h2 class="text-3xl font-bold text-center mb-8 text-white">Get in Touch</h2>
                     
-                    <?php if (isset($_SESSION['contact_form_message'])):
+                    <?php 
+                        error_log("[contact.php] Session state JUST BEFORE message display block: " . print_r($_SESSION, true));
+                        if (isset($_SESSION['contact_form_message'])):
                         error_log("[contact.php] Displaying contact_form_message: " . print_r($_SESSION['contact_form_message'], true));
                     ?>
                         <div class="<?php echo $_SESSION['contact_form_message']['type'] === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700'; ?> border px-4 py-3 rounded relative mb-6" role="alert">
@@ -98,7 +100,7 @@ if (isset($_SESSION['contact_form_message'])) {
                         error_log("[contact.php] contact_form_message has been unset.");
                         ?>
                     <?php else:
-                        error_log("[contact.php] contact_form_message NOT SET on page display block.");
+                        error_log("[contact.php] contact_form_message NOT SET on page display block (this is the final check).");
                     ?>
                     <?php endif; ?>
 
