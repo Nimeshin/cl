@@ -1,6 +1,17 @@
 <?php
 declare(strict_types=1);
 
+// Custom session configuration
+$session_save_path = __DIR__ . '/includes/sessions';
+if (!is_dir($session_save_path)) {
+    mkdir($session_save_path, 0755, true);
+}
+ini_set('session.save_path', $session_save_path);
+ini_set('session.use_only_cookies', '1');
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? '1' : '0'); // Set secure flag if HTTPS
+ini_set('session.cookie_samesite', 'Lax'); // Mitigate CSRF
+
 // Debug logging - Log more server variables at the VERY START
 error_log("--- New Request to contact-process.php ---");
 error_log("SERVER Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'N/A'));
