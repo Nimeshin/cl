@@ -18,8 +18,7 @@ session_start();
 
 // Debug: Log request method and raw POST data
 error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
-error_log("Raw POST data: " . file_get_contents('php://input'));
-error_log("POST array: " . print_r($_POST, true));
+error_log("POST data: " . print_r($_POST, true));
 
 // Check if Composer's autoloader exists
 if (!file_exists('vendor/autoload.php')) {
@@ -47,8 +46,8 @@ $site_name = 'CL Home Assist';
 $success = false;
 $error_message = '';
 
-// Check if form was submitted
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit'])) {
+// Check if form was submitted via POST and has the required token
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['form_submitted']) || $_POST['form_submitted'] !== '1') {
     $_SESSION['contact_form_message'] = [
         'type' => 'error',
         'text' => 'Invalid form submission. Please try again.'
@@ -63,6 +62,14 @@ $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_FULL_SPECIAL_
 $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+// Debug logging
+error_log("Sanitized input:");
+error_log("First Name: " . $first_name);
+error_log("Last Name: " . $last_name);
+error_log("Email: " . $email);
+error_log("Phone: " . $phone);
+error_log("Message: " . $message);
 
 // Validate required fields
 if (!$first_name || !$last_name || !$email || !$message) {
@@ -88,10 +95,11 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 $to = 'info@clhomeassist.co.za';
 $subject = 'New Contact Form Submission - CL Home Assist';
 $headers = array(
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset=UTF-8',
     'From: CL Home Assist <info@clhomeassist.co.za>',
     'Reply-To: ' . $first_name . ' ' . $last_name . ' <' . $email . '>',
-    'X-Mailer: PHP/' . phpversion(),
-    'Content-Type: text/html; charset=UTF-8'
+    'X-Mailer: PHP/' . phpversion()
 );
 
 $email_content = "
@@ -123,15 +131,21 @@ $email_content = "
 </body>
 </html>";
 
-// Send email using PHP's mail function
+// Debug logging
+error_log("Attempting to send email to: " . $to);
+
+// Send email
 $success = mail($to, $subject, $email_content, implode("\r\n", $headers));
 
 if ($success) {
+    error_log("Main email sent successfully");
+    
     // Send confirmation email to user
     $confirmation_subject = 'Thank you for contacting CL Home Assist';
     $confirmation_headers = array(
-        'From: CL Home Assist <info@clhomeassist.co.za>',
-        'Content-Type: text/html; charset=UTF-8'
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8',
+        'From: CL Home Assist <info@clhomeassist.co.za>'
     );
     
     $confirmation_content = "
@@ -164,19 +178,24 @@ if ($success) {
     </html>";
     
     mail($email, $confirmation_subject, $confirmation_content, implode("\r\n", $confirmation_headers));
+    error_log("Confirmation email sent to: " . $email);
     
     $_SESSION['contact_form_message'] = [
         'type' => 'success',
         'text' => 'Thank you for your message! We will get back to you soon.'
     ];
 } else {
-    error_log("Failed to send email from contact form");
+    error_log("Failed to send email");
     $_SESSION['contact_form_message'] = [
         'type' => 'error',
         'text' => 'Sorry, there was a problem sending your message. Please try again later.'
     ];
 }
 
+// Debug logging
+error_log("Session data before redirect: " . print_r($_SESSION, true));
+
+// Redirect back to contact form
 header('Location: contact.php');
 exit;
 

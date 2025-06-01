@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error.log');
 
-// Start session
+// Start session at the beginning
 session_start();
 
 // Set page title
@@ -81,7 +81,7 @@ if (isset($_SESSION['contact_form_message'])) {
                         <?php unset($_SESSION['contact_form_message']); ?>
                     <?php endif; ?>
 
-                    <form action="contact-process.php" method="POST" id="contactForm">
+                    <form method="POST" action="contact-process.php" id="contactForm" onsubmit="return validateForm(event)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <input type="text" name="first_name" placeholder="First Name*" required
@@ -114,11 +114,12 @@ if (isset($_SESSION['contact_form_message'])) {
                                 minlength="10"></textarea>
                         </div>
                         <div class="mt-6">
-                            <button type="submit" name="submit" 
+                            <button type="submit" name="submit" value="1"
                                 class="bg-yellow-500 text-[#0B2447] px-8 py-3 rounded-lg font-bold hover:bg-yellow-600 transition duration-300 w-full md:w-auto">
                                 Send Message
                             </button>
                         </div>
+                        <input type="hidden" name="form_submitted" value="1">
                     </form>
                 </div>
             </div>
@@ -127,11 +128,17 @@ if (isset($_SESSION['contact_form_message'])) {
 </main>
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-    const submitButton = this.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.textContent = 'Sending...';
-});
+function validateForm(event) {
+    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    if (form.checkValidity()) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+        return true;
+    }
+    return false;
+}
 </script>
 
 <?php require_once 'includes/footer.php'; ?> 
