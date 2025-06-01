@@ -105,6 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Debug logging
+error_log("Session data before redirect: " . print_r($_SESSION, true));
+session_write_close(); // Explicitly write and close session before redirect
+
 // Redirect based on result
 if ($success) {
     header('Location: contact.php?success=1');
