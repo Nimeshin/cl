@@ -217,8 +217,24 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.disabled = true;
             loadingSpinner.classList.remove('hidden');
             
-            // Submit the form
-            this.submit();
+            // Create FormData object
+            const formData = new FormData(form);
+            
+            // Send form data using fetch
+            fetch('contact-process.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // Always redirect to contact.php
+                window.location.href = 'contact.php';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Hide loading spinner and enable button on error
+                submitButton.disabled = false;
+                loadingSpinner.classList.add('hidden');
+            });
         }
     });
 });
