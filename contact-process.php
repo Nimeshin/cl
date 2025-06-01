@@ -16,10 +16,23 @@ ini_set('error_log', __DIR__ . '/error.log');
 // Start session at the beginning
 session_start();
 
-// Include Composer's autoloader
+// Debug: Log request method and raw POST data
+error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+error_log("Raw POST data: " . file_get_contents('php://input'));
+error_log("POST array: " . print_r($_POST, true));
+
+// Check if Composer's autoloader exists
 if (!file_exists('vendor/autoload.php')) {
-    die("Error: vendor/autoload.php not found. Please run 'composer install'");
+    error_log("Error: vendor/autoload.php not found");
+    $_SESSION['contact_form_message'] = [
+        'type' => 'error',
+        'text' => 'System configuration error. Please contact the administrator.'
+    ];
+    header('Location: contact.php');
+    exit;
 }
+
+// Include Composer's autoloader
 require 'vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -33,10 +46,6 @@ $site_name = 'CL Home Assist';
 // Initialize variables
 $success = false;
 $error_message = '';
-
-// Debug: Log request method and POST data
-error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
-error_log("POST Data: " . print_r($_POST, true));
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -79,16 +88,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mail->Host = 'mail.clhomeassist.co.za';
         $mail->SMTPAuth = true;
         $mail->Username = 'info@clhomeassist.co.za';
-        $mail->Password = 'Cl@ssist2024'; // Make sure this is the correct password
+        $mail->Password = 'Cl@ssist2024';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
-        // Debug: Log SMTP settings
-        error_log("SMTP Settings:");
-        error_log("Host: {$mail->Host}");
-        error_log("Port: {$mail->Port}");
-        error_log("Username: {$mail->Username}");
-        error_log("SMTPSecure: {$mail->SMTPSecure}");
+        // Debug: Test SMTP connection
+        try {
+            $smtp = fsockopen($mail->Host, $mail->Port, $errno, $errstr, 30);
+            if (!$smtp) {
+                error_log("SMTP Connection Error: $errstr ($errno)");
+            } else {
+                error_log("SMTP Connection Successful");
+                fclose($smtp);
+            }
+        } catch (Exception $e) {
+            error_log("SMTP Connection Test Error: " . $e->getMessage());
+        }
 
         // Recipients
         $mail->setFrom('info@clhomeassist.co.za', $site_name);
@@ -208,10 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         error_log("Contact form error: " . $e->getMessage());
         $error_message = $e->getMessage();
-        
-        // For debugging, show the actual error
-        $error_message = "Error: " . $e->getMessage();
     }
+} else {
+    error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
+    $error_message = "Invalid request method";
 }
 
 // Store messages in session

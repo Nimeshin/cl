@@ -80,19 +80,19 @@ if (isset($_SESSION['contact_form_message'])) {
                         </div>
                     <?php endif; ?>
 
-                    <form action="contact-process.php" method="POST" class="space-y-6" id="contactForm" novalidate>
+                    <form action="contact-process.php" method="POST" class="space-y-6" id="contactForm">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <input type="text" name="first_name" placeholder="First Name*" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500 bg-white"
-                                    pattern="[A-Za-z ]+"
+                                    pattern="[A-Za-z\s]+"
                                     title="Please enter a valid first name (letters and spaces only)">
                                 <div class="text-red-500 text-sm mt-1 hidden"></div>
                             </div>
                             <div>
                                 <input type="text" name="last_name" placeholder="Last Name*" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500 bg-white"
-                                    pattern="[A-Za-z ]+"
+                                    pattern="[A-Za-z\s]+"
                                     title="Please enter a valid last name (letters and spaces only)">
                                 <div class="text-red-500 text-sm mt-1 hidden"></div>
                             </div>
@@ -101,14 +101,13 @@ if (isset($_SESSION['contact_form_message'])) {
                             <div>
                                 <input type="email" name="email" placeholder="Email Address*" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500 bg-white"
-                                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                     title="Please enter a valid email address">
                                 <div class="text-red-500 text-sm mt-1 hidden"></div>
                             </div>
                             <div>
                                 <input type="tel" name="phone" placeholder="Phone Number"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-500 bg-white"
-                                    pattern="[0-9+ -]{10,}"
+                                    pattern="[0-9\s\+\-]{10,}"
                                     title="Please enter a valid phone number (minimum 10 digits)">
                                 <div class="text-red-500 text-sm mt-1 hidden"></div>
                             </div>
@@ -171,8 +170,16 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
         
+        if (input.name === 'email') {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(input.value.trim())) {
+                showError(input, 'Please enter a valid email address');
+                return false;
+            }
+        }
+        
         if (input.pattern && input.value.trim()) {
-            const regex = new RegExp(input.pattern);
+            const regex = new RegExp(`^${input.pattern}$`);
             if (!regex.test(input.value.trim())) {
                 showError(input, input.title);
                 return false;
